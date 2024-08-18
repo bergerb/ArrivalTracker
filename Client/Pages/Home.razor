@@ -20,7 +20,7 @@
 {
     <p>
     <select id="stops" 
-        @bind="selectedDirection">
+        @bind="selectedStop">
         @foreach(var stop in stops)
             {
                 <option value="@stop.Id">@stop.Name</option>
