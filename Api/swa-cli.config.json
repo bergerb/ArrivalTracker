@@ -3,7 +3,6 @@
   "configurations": {
     "api": {
       "appLocation": "./Client",
-      "apiLocation": ".",
       "outputLocation": ".",
       "dataApiLocation": "swa-db-connections",
       "apiLanguage": "dotnetisolated",
