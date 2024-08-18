@@ -15,8 +15,13 @@
     </select>
 </p>
 
-
-@if (!string.IsNullOrEmpty(selectedDirection))
+@if (isLoadingStops)
+{
+    <p>
+        Loading...
+    </p>
+}
+@if (!string.IsNullOrEmpty(selectedDirection) && !isLoadingStops)
 {
     <p>
     <select id="stops" 
@@ -42,13 +47,13 @@
         IncludeFields = true,
     };
 
-    bool IsLoadingStops = false;
+    bool isLoadingStops = false;
 
     async Task OnDirectionSelected()
     {
         if (!string.IsNullOrEmpty(selectedDirection))
         {
-            IsLoadingStops = true;
+            isLoadingStops = true;
             this.StateHasChanged();
 
             var value = await DataService.HttpClient.GetAsync($"/data-api/rest/Stop?$filter=Direction eq {selectedDirection}");
@@ -56,11 +61,11 @@
 
             stops = ((Root)(JsonSerializer.Deserialize<Root>(content!, _options)!)).value.ToList();
 
-            IsLoadingStops = false;
+            isLoadingStops = false;
             this.StateHasChanged();
         }
 
-        IsLoadingStops = false;
+        isLoadingStops = false;
     }
 
     class Root
