@@ -1,6 +1,7 @@
 ﻿@page "/fetchdata"
+@using BlazorApp.Client.Services
 @using BlazorApp.Shared 
-@inject HttpClient Http
+@inject MainHttpService Http
 
 <PageTitle>Weather</PageTitle>
 
@@ -44,7 +45,7 @@ else
     {
         try
         {
-            forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("/api/WeatherForecast") ?? new WeatherForecast[]{};
+            forecasts = await Http.httpClient.GetFromJsonAsync<WeatherForecast[]>("/api/WeatherForecast") ?? new WeatherForecast[]{};
         }
         catch (Exception ex)
         {

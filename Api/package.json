@@ -1,0 +1,12 @@
+{
+  "name": "swa-local",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "swa start http://localhost:7071 --data-api-location .\\swa-db-connections"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

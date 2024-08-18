@@ -1,7 +1,81 @@
 ﻿@page "/"
+@using BlazorApp.Client.Services
+@using System.Text.Json
+@inject DataHttpService DataService
 
-<PageTitle>Home</PageTitle>
+<PageTitle>Arrival Tracker</PageTitle>
 
-<h1>Hello, world!</h1>
+<p>
+    <select id="directions" 
+        @bind="selectedDirection"
+        @bind:after="OnDirectionSelected">
+        <option value=""></option>
+        <option value="0">Northbound</option>
+        <option value="1">Southbound</option>
+    </select>
+</p>
 
-Welcome to your new app.
+
+@if (!string.IsNullOrEmpty(selectedDirection))
+{
+    <p>
+    <select id="stops" 
+        @bind="selectedDirection">
+        @foreach(var stop in stops)
+            {
+                <option value="@stop.Id">@stop.Name</option>
+            }
+        </select>
+    </p>
+}
+
+@code {
+
+    List<Stop> Stops = new();
+    string selectedDirection { get; set; } = null!;
+    string selectedStop { get; set; } = null!;
+
+    private List<Stop> stops = new();
+    private readonly JsonSerializerOptions _options = new()
+    {
+        PropertyNameCaseInsensitive = true,
+        IncludeFields = true,
+    };
+
+    bool IsLoadingStops = false;
+
+    async Task OnDirectionSelected()
+    {
+        if (!string.IsNullOrEmpty(selectedDirection))
+        {
+            IsLoadingStops = true;
+            this.StateHasChanged();
+
+            var value = await DataService.HttpClient.GetAsync($"/data-api/rest/Stop?$filter=Direction eq {selectedDirection}");
+            var content = await value.Content.ReadAsStringAsync();
+
+            stops = ((Root)(JsonSerializer.Deserialize<Root>(content!, _options)!)).value.ToList();
+
+            IsLoadingStops = false;
+            this.StateHasChanged();
+        }
+
+        IsLoadingStops = false;
+    }
+
+    class Root
+    {
+        public Stop[] value { get; set; } = null!;
+    };
+
+    class Stop
+    {
+        public string Id { get; set; } = null!;
+        public string Name { get; set; } = null!;
+        public int Code { get; set; }
+        public double Lat { get; set; }
+        public double Lon { get; set; }
+        public bool Minor { get; set; }
+        public int Direction { get; set; }
+    }
+}
