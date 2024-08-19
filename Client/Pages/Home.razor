@@ -33,6 +33,12 @@
         </select>
     </p>
 }
+@if(!string.IsNullOrEmpty(selectedStop))
+{
+    <p>
+        @selectedStop
+    </p>
+}
 
 @code {
 
@@ -51,6 +57,8 @@
 
     async Task OnDirectionSelected()
     {
+        selectedStop = string.Empty;
+
         if (!string.IsNullOrEmpty(selectedDirection))
         {
             isLoadingStops = true;
